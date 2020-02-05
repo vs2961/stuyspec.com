@@ -1,8 +1,9 @@
 import React from "react";
 import { Grid } from "react-bootstrap/lib";
-import injectSheet from "react-jss";
+import { createUseStyles } from "react-jss";
 
 import ArticleRow from "./ArticleRow";
+import { IArticle } from '../queries';
 
 const styles = {
   ArticleList: {
@@ -42,10 +43,20 @@ const styles = {
   },
 };
 
-const ArticleList = ({ classes, articles, title, label }) => {
+const useStyles = createUseStyles(styles);
+
+interface IProps {
+  title?: string,
+  label?: string,
+  articles: IArticle[]
+}
+
+const ArticleList: React.FC<IProps> = ({ articles, title, label }) => {
+  const classes = useStyles();
+
   if (title !== "Recommended") {
-    articles = articles.sort((a, b) => {
-      return new Date(b.created_at) - new Date(a.created_at);
+    articles.sort((a, b) => {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
   }
   return (
@@ -71,4 +82,4 @@ const ArticleList = ({ classes, articles, title, label }) => {
   );
 };
 
-export default injectSheet(styles)(ArticleList);
+export default ArticleList;
